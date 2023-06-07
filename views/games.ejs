@@ -1,0 +1,206 @@
+<%- include('partials/header') -%>
+<div class="carousel-container relative">
+  <section id="image-carousel" class="splide w-100 h-30" aria-label="Beautiful Images">
+    <div class="splide__track">
+      <ul class="splide__list">
+        <li class="splide__slide">
+          <img src="https://images.gog-statics.com/c75e674590b8947542c809924df30bbef2190341163dd08668e243c266be70c5.jpg" alt="" width="100%" height="40px">
+        </li>
+        <li class="splide__slide">
+          <img src="https://images.gog-statics.com/c75e674590b8947542c809924df30bbef2190341163dd08668e243c266be70c5.jpg" alt="" width="100%" height="40px">
+        </li>
+        <li class="splide__slide">
+          <img src="https://images.gog-statics.com/c75e674590b8947542c809924df30bbef2190341163dd08668e243c266be70c5.jpg" alt="" width="100%" height="40px">
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="carousel-search-container">
+    <div class="search-bar">
+      <input type="text" placeholder="Search" class="search-input">
+      <button class="search-button">
+        <i class="fas fa-search">Search</i>
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Progress bar -->
+<div class="my-carousel-progress">
+  <div class="my-carousel-progress-bar"></div>
+</div>
+
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-9 col-lg-8 col-md-7">
+        <div class="section-title text-white">
+          <h2>Latest Ratings</h2>
+        </div>
+        <ul class="blog-filter">
+          <li><a href="#">Racing</a></li>
+          <li><a href="#">Shooters</a></li>
+          <li><a href="#">Strategy</a></li>
+          <li><a href="#">Online</a></li>
+        </ul>
+        <% games.forEach((game, index) => { %>
+          <div class="blog-item">
+            <div class="blog-thumb">
+              <img class="w-full rounded-lg shadow-xl dark:shadow-gray-800" src="<%= game.cover %>" alt="">
+            </div>
+            <div class="blog-text text-box text-white">
+              <div class="top-meta">Games / in <a href="">Strategy</a></div>
+              <% if (game.rating >= 90) { %>
+                <h5 class="text-2xl pl-60" style="color: greenyellow;"><%= Math.floor(game.rating) %></h5>
+              <% } else if (game.rating >= 75) { %>
+                <h5 class="text-2xl pl-60" style="color: yellow;"><%= Math.floor(game.rating) %></h5>
+              <% } else { %>
+                <h5 class="text-2xl pl-60" style="color: red;"><%= Math.floor(game.rating) %></h5>
+              <% } %>
+              <h3 class="text-white text-xl"><%= game.name %></h3>
+              <p class='text-gray-500'><%= game.summary %></p>
+              <button class="btn">Read More</button>
+            </div>
+            <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+          </div>
+        <% }); %>
+        <div id="scroll-loading-indicator" class="text-center mt-4">
+          <p>Loading more games...</p>
+        </div>
+
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-5 sidebar">
+        <div id="stickySidebar">
+          <div class="inner-wrapper-sticky" style="position: relative;">
+            <!-- Widget code -->
+            <div class="widget-item">
+              <div class="categories-widget">
+                <h4 class="widget-title">Popular Platforms</h4>
+                <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-9 dark:bg-gray-700">
+                <ul>
+                  <li><a href="">3DS</a></li>
+                  <li><a href="">Mac</a></li>
+                  <li><a href="">PC</a></li>
+                  <li><a href="">Nintendo Switch</a></li>
+                  <li><a href="">PS4</a></li>
+                  <li><a href="">PS5</a></li>
+                  <li><a href="">Wii U</a></li>
+                  <li><a href="">Xbox One</a></li>
+                  <li><a href="">Xbox Series X</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#image-carousel').mount();
+
+    // Infinite scroll for more games
+    let page = 1;
+    let loading = false;
+
+    function loadMoreGames() {
+      if (!loading) {
+        loading = true;
+
+        // Show loading indicator
+        document.getElementById('scroll-loading-indicator').style.display = 'block';
+
+        fetchGames(page + 1)
+          .then(data => {
+            if (data && Array.isArray(data)) {
+              // Append new games to the existing game list
+              data.forEach(game => {
+                // Create a new game item element
+                const gameItem = document.createElement('div');
+                gameItem.classList.add('blog-item');
+
+                // Populate the game item with data (similar to the existing game items)
+                // ...
+
+                // Append the game item to the game list container
+                document.querySelector('.col-xl-9 .row').appendChild(gameItem);
+              });
+
+              page++;
+              loading = false;
+
+              // Hide loading indicator
+              document.getElementById('scroll-loading-indicator').style.display = 'none';
+            }
+          })
+          .catch(error => {
+            console.error('Error loading more games:', error);
+            loading = false;
+
+            // Hide loading indicator (optional)
+            document.getElementById('scroll-loading-indicator').style.display = 'none';
+          });
+      }
+    }
+
+    function handleScroll() {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+
+      if (scrollHeight - scrollTop - clientHeight <= 100) {
+        loadMoreGames();
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Fetch games from the API endpoint
+    function fetchGames(page) {
+      const gamesPerPage = 10;
+      const offset = (page - 1) * gamesPerPage;
+
+      return fetch('https://api.igdb.com/v4/games', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Client-ID': '6tw1ckaaobfdj9hnha1yi5n3j9ekt0',
+          'Authorization': 'Bearer xhsfikor2bpbs52hzmf8na3an9sfiz',
+        },
+        body: `fields name,id,platforms,rating,category,summary;where platforms = (6) & rating > 1;sort rating desc; offset ${offset}; limit ${gamesPerPage};`,
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            const games = data.map(game => ({
+              id: game.id,
+              name: game.name,
+              platforms: game.platforms,
+              rating: game.rating,
+              category: game.category,
+              summary: game.summary,
+              cover: getCoverImageUrl(game.cover),
+            }));
+
+            return games;
+          }
+
+          return [];
+        });
+    }
+
+    // Helper function to get the cover image URL
+    function getCoverImageUrl(cover) {
+      if (cover && cover.image_id) {
+        return `https://images.igdb.com/igdb/image/upload/t_cover_big/${cover.image_id}.jpg`;
+      }
+      return ''; // Default cover image URL
+    }
+  });
+</script>
+
+<%- include('partials/footer') -%>

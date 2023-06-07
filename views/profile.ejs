@@ -1,0 +1,16 @@
+<%- include('partials/header') -%>
+  <% if (user.picture) { %>
+    <img class="block py-3 ml-4" src="<%= user.picture %>" width="45" height="45">
+  <% } %>
+  <h1 class="text-2xl mb-4 ml-4 text-gray-400">Welcome <%= user.nickname %></h1>
+
+<!-- 
+  
+  <p class="py-3 text-gray-400">
+    This is the content of <code class="bg-gray-200">req.user</code>.<br>
+    <strong>Note:</strong> <code class="bg-gray-200">_raw</code> and <code class="bg-gray-200">_json</code> properties have been omitted.
+  </p> -->
+
+  <pre class="block  p-4 text-sm overflow-scroll text-gray-400"><%= userProfile %></pre>
+
+<%- include('partials/footer') -%>
