@@ -24,8 +24,8 @@ router.get('/games', function (req, res, next) {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
-      'Client-ID': '6tw1ckaaobfdj9hnha1yi5n3j9ekt0',
-      'Authorization': 'Bearer xhsfikor2bpbs52hzmf8na3an9sfiz',
+      'Client-ID': '',
+      'Authorization': '',
     },
     body: `fields name,id,platforms,rating,category,summary;where platforms = (6) & rating > 1;sort rating desc; limit ${gamesPerPage};`
   })
@@ -52,8 +52,8 @@ router.get('/games', function (req, res, next) {
               method: 'POST',
               headers: {
                 'Accept': 'application/json',
-                'Client-ID': '6tw1ckaaobfdj9hnha1yi5n3j9ekt0',
-                'Authorization': 'Bearer xhsfikor2bpbs52hzmf8na3an9sfiz',
+                'Client-ID': '',
+                'Authorization': '',
               },
               body: `fields *; where game = ${game.id};`
             })
@@ -72,8 +72,8 @@ router.get('/games', function (req, res, next) {
               method: 'POST',
               headers: {
                 'Accept': 'application/json',
-                'Client-ID': '6tw1ckaaobfdj9hnha1yi5n3j9ekt0',
-                'Authorization': 'Bearer xhsfikor2bpbs52hzmf8na3an9sfiz',
+                'Client-ID': '',
+                'Authorization': '',
               },
               body: `fields category,checksum,description;`
             })
