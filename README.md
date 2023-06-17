@@ -16,3 +16,10 @@ npm install fetch
 npm install dotenv
 ```
 
+
+2. Launch GameZone locally using nodejs
+
+```bash
+node server
+```
+HAVE FUN !
