@@ -22,4 +22,8 @@ npm install dotenv
 ```bash
 node server
 ```
+3. Insert your API integration authorization keys with gamedb API
+```bash
+Insert your API integration authorization keys with gamedb API into /routes/index.js
+```
 HAVE FUN !
