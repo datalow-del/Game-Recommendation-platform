@@ -1,6 +1,6 @@
 <%- include('partials/header') -%>
 <div class="carousel-container relative">
-  <section id="image-carousel" class="splide w-100 h-30" aria-label="Beautiful Images">
+  <section id="image-carousel" class="splide w-100 h-28" aria-label="GameZone">
     <div class="splide__track">
       <ul class="splide__list">
         <li class="splide__slide">
@@ -16,7 +16,7 @@
     </div>
   </section>
 
-  <div class="carousel-search-container">
+  <div class=" md:carousel-search-container lg:carousel-search-container">
     <div class="search-bar">
       <input type="text" placeholder="Search" class="search-input">
       <button class="search-button">
@@ -59,18 +59,18 @@
               <% } %>
               <h3 class="text-white text-xl"><%= game.name %></h3>
               <p class='text-gray-500'><%= game.summary %></p>
-              <button class="btn">Read More</button>
+              <button href="/game" class="btn"onclick="window.location.href='/game'">Read More</button>
             </div>
             <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
           </div>
         <% }); %>
-        <div id="scroll-loading-indicator" class="text-center mt-4">
-          <p>Loading more games...</p>
+        <div id="scroll-loading-indicator" class="text-center mt-4 text-white">
+          <p>Wait a moment please ...</p>
         </div>
 
       </div>
 
-      <div class="col-xl-3 col-lg-4 col-md-5 sidebar">
+      <div class="col-xl-3 col-lg-4 col-md-5 hidden md:sidebar lg:block">
         <div id="stickySidebar">
           <div class="inner-wrapper-sticky" style="position: relative;">
             <!-- Widget code -->
@@ -103,103 +103,98 @@
   document.addEventListener('DOMContentLoaded', function () {
     new Splide('#image-carousel').mount();
 
-    // Infinite scroll for more games
-    let page = 1;
-    let loading = false;
+  //   // Infinite scroll for more games
+  //   let page = 1;
+  //   let loading = false;
 
-    function loadMoreGames() {
-      if (!loading) {
-        loading = true;
+  //   function loadMoreGames() {
+  //     if (!loading) {
+  //       loading = true;
 
-        // Show loading indicator
-        document.getElementById('scroll-loading-indicator').style.display = 'block';
+  //       // Show loading indicator
+  //       document.getElementById('scroll-loading-indicator').style.display = 'block';
 
-        fetchGames(page + 1)
-          .then(data => {
-            if (data && Array.isArray(data)) {
-              // Append new games to the existing game list
-              data.forEach(game => {
-                // Create a new game item element
-                const gameItem = document.createElement('div');
-                gameItem.classList.add('blog-item');
+  //       fetchGames(page + 1)
+  //         .then(data => {
+  //           if (data && Array.isArray(data)) {
+  //             // Append new games to the existing game list
+  //             data.forEach(game => {
+  //               // Create a new game item element
+  //               const gameItem = document.createElement('div');
+  //               gameItem.classList.add('blog-item');
 
-                // Populate the game item with data (similar to the existing game items)
-                // ...
+  //               // Populate the game item with data (similar to the existing game items)
+  //               // ...
 
-                // Append the game item to the game list container
-                document.querySelector('.col-xl-9 .row').appendChild(gameItem);
-              });
+  //               // Append the game item to the game list container
+  //               document.querySelector('.col-xl-9 .row').appendChild(gameItem);
+  //             });
 
-              page++;
-              loading = false;
+  //             page++;
+  //             loading = false;
 
-              // Hide loading indicator
-              document.getElementById('scroll-loading-indicator').style.display = 'none';
-            }
-          })
-          .catch(error => {
-            console.error('Error loading more games:', error);
-            loading = false;
+  //             // Hide loading indicator
+  //             document.getElementById('scroll-loading-indicator').style.display = 'none';
+  //           }
+  //         })
+  //         .catch(error => {
+  //           console.error('Error loading more games:', error);
+  //           loading = false;
 
-            // Hide loading indicator (optional)
-            document.getElementById('scroll-loading-indicator').style.display = 'none';
-          });
-      }
-    }
+  //           // Hide loading indicator (optional)
+  //           document.getElementById('scroll-loading-indicator').style.display = 'none';
+  //         });
+  //     }
+  //   }
 
-    function handleScroll() {
-      const scrollHeight = document.documentElement.scrollHeight;
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      const clientHeight = document.documentElement.clientHeight;
+  //   function handleScroll() {
+  //     const scrollHeight = document.documentElement.scrollHeight;
+  //     const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  //     const clientHeight = document.documentElement.clientHeight;
 
-      if (scrollHeight - scrollTop - clientHeight <= 100) {
-        loadMoreGames();
-      }
-    }
+  //     if (scrollHeight - scrollTop - clientHeight <= 100) {
+  //       loadMoreGames();
+  //     }
+  //   }
 
-    window.addEventListener('scroll', handleScroll);
+  //   window.addEventListener('scroll', handleScroll);
 
-    // Fetch games from the API endpoint
-    function fetchGames(page) {
-      const gamesPerPage = 10;
-      const offset = (page - 1) * gamesPerPage;
+  //   // Fetch games from the API endpoint
+  //   function fetchGames(page) {
+  //     const gamesPerPage = 10;
+  //     const offset = (page - 1) * gamesPerPage;
 
-      return fetch('https://api.igdb.com/v4/games', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Client-ID': '6tw1ckaaobfdj9hnha1yi5n3j9ekt0',
-          'Authorization': 'Bearer xhsfikor2bpbs52hzmf8na3an9sfiz',
-        },
-        body: `fields name,id,platforms,rating,category,summary;where platforms = (6) & rating > 1;sort rating desc; offset ${offset}; limit ${gamesPerPage};`,
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (Array.isArray(data)) {
-            const games = data.map(game => ({
-              id: game.id,
-              name: game.name,
-              platforms: game.platforms,
-              rating: game.rating,
-              category: game.category,
-              summary: game.summary,
-              cover: getCoverImageUrl(game.cover),
-            }));
+  //     return fetch('https://api.igdb.com/v4/games', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Client-ID': '6tw1ckaaobfdj9hnha1yi5n3j9ekt0',
+  //         'Authorization': 'Bearer xhsfikor2bpbs52hzmf8na3an9sfiz',
+  //       },
+  //       body: `fields name,id,platforms,rating,category,summary;where platforms = (6) & rating > 1;sort rating desc; offset ${offset}; limit ${gamesPerPage};`,
+  //     })
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         if (Array.isArray(data)) {
+  //           const games = data.map(game => ({
+  //             id: game.id,
+  //             name: game.name,
+  //             platforms: game.platforms,
+  //             rating: game.rating,
+  //             category: game.category,
+  //             summary: game.summary,
+  //             cover: getCoverImageUrl(game.cover),
+  //           }));
 
-            return games;
-          }
+  //           return games;
+  //         }
 
-          return [];
-        });
-    }
+  //         return [];
+  //       });
+  //   }
 
-    // Helper function to get the cover image URL
-    function getCoverImageUrl(cover) {
-      if (cover && cover.image_id) {
-        return `https://images.igdb.com/igdb/image/upload/t_cover_big/${cover.image_id}.jpg`;
-      }
-      return ''; // Default cover image URL
-    }
+  //   // Helper function to get the cover image URL
+   
   });
 </script>
 

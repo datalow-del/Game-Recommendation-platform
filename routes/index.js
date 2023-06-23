@@ -1,18 +1,49 @@
 const express = require('express');
 const router = express.Router();
+const flash = require('connect-flash');
+router.use(flash());
+
 
 router.get('/', function (req, res, next) {
   res.render('index', {
     title: 'GameZone',
     isAuthenticated: req.oidc.isAuthenticated()
+    
   });
-});
+});router.get('/profile', function (req, res, next) {
+  const isAuthenticated = req.oidc.isAuthenticated();
+  const userProfile = JSON.stringify(req.oidc.user, null, 2);
+  const title = 'Profile page';
 
-router.get('/profile', function (req, res, next) {
-  res.render('profile', {
-    userProfile: JSON.stringify(req.oidc.user, null, 2),
-    title: 'Profile page'
-  });
+  // Check if the user is authenticated
+  if (isAuthenticated) {
+    // Add the following code to display a pop-up notification using Bootstrap
+
+    // Define the JavaScript code to show the notification
+    const popupScript = `
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var notification = document.getElementById('success-notification');
+          var bsModal = new bootstrap.Modal(notification);
+          bsModal.show();
+        });
+      </script>
+    `;
+
+    // Render the profile page and include the pop-up notification script
+    res.render('profile', {
+      userProfile,
+      title,
+      isAuthenticated,
+      popupScript, // Pass the popupScript variable to the view
+    });
+  } else {
+    res.render('profile', {
+      userProfile,
+      title,
+      isAuthenticated,
+    });
+  }
 });
 
 router.get('/games', function (req, res, next) {
